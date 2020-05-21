@@ -5,7 +5,7 @@ BOARD_COLS = 4
 WIN_STATE = (0, 3)
 LOSE_STATE = (1, 3)
 START = (2, 0)
-DETERMINISTIC = False
+DETERMINISTIC = True
 
 
 class State:
@@ -56,11 +56,11 @@ class State:
                 nxtState = (self.state[0], self.state[1] - 1)
             else:
                 nxtState = (self.state[0], self.state[1] + 1)
-            self.determine = False
+            #self.determine = False
         else:
             # non-deterministic
             action = self._chooseActionProb(action)
-            self.determine = True
+            #self.determine = True
             nxtState = self.nxtPosition(action)
 
         # if next state is legal
@@ -166,6 +166,7 @@ class Agent:
 
 if __name__ == "__main__":
     ag = Agent()
+    ag.State.showBoard()
     print("initial Q-values ... \n")
     print(ag.Q_values)
 
