@@ -1,17 +1,22 @@
 import numpy as np
 
 BOARD_ROWS = 3
-BOARD_COLS = 4
-WIN_STATE = (0, 3)
-LOSE_STATE = (1, 3)
+BOARD_COLS = 3
+WIN_STATE = (0, 2)
+LOSE_STATE = (1, 2)
 START = (2, 0)
 DETERMINISTIC = True
+BLOCKSTATES = [(1,1)]
+
 
 
 class State:
-    def __init__(self, state=START):
+    def __init__(self, state=START,blockstates = BLOCKSTATES):
         self.board = np.zeros([BOARD_ROWS, BOARD_COLS])
-        self.board[1, 1] = -1
+        self.blockstates = blockstates
+        for i in blockstates:
+            self.board[i[0],i[1]] = -1
+        
         self.state = state
         self.isEnd = False
         self.determine = DETERMINISTIC
@@ -64,11 +69,11 @@ class State:
             nxtState = self.nxtPosition(action)
 
         # if next state is legal
-        if (nxtState[0] >= 0) and (nxtState[0] <= 2):
-            if (nxtState[1] >= 0) and (nxtState[1] <= 3):
-                if nxtState != (1, 1):
+        if (nxtState[0] >= 0) and (nxtState[0] <= BOARD_ROWS):
+            if (nxtState[1] >= 0) and (nxtState[1] <= BOARD_COLS):
+                if nxtState not in self.blockstates:
                     return nxtState
-        return self.state
+        return None
 
     def showBoard(self):
         self.board[self.state] = 1
@@ -96,7 +101,7 @@ class Agent:
         self.isEnd = self.State.isEnd
         self.lr = 0.2
         self.exp_rate = 0.3
-        self.decay_gamma = 0.9
+        self.decay_gamma = 0.2
 
         # initial Q values
         self.Q_values = {}
@@ -151,17 +156,34 @@ class Agent:
                 self.reset()
                 i += 1
             else:
+
                 action = self.chooseAction()
                 # append trace
-                self.states.append([(self.State.state), action])
-                print("current position {} action {}".format(self.State.state, action))
-                # by taking the action, it reaches the next state
-                self.State = self.takeAction(action)
-                # mark is end
-                self.State.isEndFunc()
-                print("nxt state", self.State.state)
-                print("---------------------")
-                self.isEnd = self.State.isEnd
+                if action!= None:
+                    self.states.append([(self.State.state), action])
+                    print("current position {} action {}".format(self.State.state, action))
+                    # by taking the action, it reaches the next state
+                    self.State = self.takeAction(action)
+                    # mark is end
+                    self.State.isEndFunc()
+                    print("nxt state", self.State.state)
+                    print("---------------------")
+                    self.isEnd = self.State.isEnd
+    
+    def printQvalues(self,direction):
+        print('Direction:',direction)
+        for i in range(0, BOARD_ROWS):
+            print('---------------------------------------------')
+            out = '| '
+            for j in range(0, BOARD_COLS):
+                try:
+                    token = self.Q_values[(i,j)][direction]
+                except:
+                    token = 0.0
+                out += "{:6.3f}   | ".format(token)
+            print(out)
+        print('---------------------------------------------')
+        print('---------------------------------------------')
 
 
 if __name__ == "__main__":
@@ -170,6 +192,11 @@ if __name__ == "__main__":
     print("initial Q-values ... \n")
     print(ag.Q_values)
 
-    ag.play(50)
+    ag.play(500)
     print("latest Q-values ... \n")
     print(ag.Q_values)
+    ag.State.showBoard()
+    ag.printQvalues('up')
+    ag.printQvalues('down')
+    ag.printQvalues('left')
+    ag.printQvalues('right')
