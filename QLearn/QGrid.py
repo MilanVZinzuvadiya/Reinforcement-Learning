@@ -12,33 +12,28 @@ class QGrid:
                 for j in range(cols):
                     self.qValues[d][i].append(0.0)
     
-
-    def move(self,i,j,direction):
-        x,y = i,j
-        if direction == 'up':
-            i = i - 1
-        elif direction == 'down':
-            i = i + 1
-        elif direction == 'left':
-            j = j - 1
-        else:
-            j = j + 1
-
-        if (0<i<self.rows) and (0 < j < self.cols):
-            return i,j,self.maxQ(i,j)
-        return x,y,None
     
-    def maxQ(self,i,j):
+    
+    def maxQ(self,state):
+        i,j = state[0],state[1]
         values = [self.qValues['up'][i][j],self.qValues['down'][i][j],self.qValues['left'][i][j],self.qValues['right'][i][j]]
         max_value = max(values)
         direction = self.directions[values.index(max_value)]
         return direction,max_value
 
-    def getQvalue(self,i,j,direction):
-        assert i< self.rows and j < self.cols, "Invalid row col values"
-        return self.qValues[direction][i][j]
+    #getQvalue return value of Q(s,a)
+    # it takes state_action tuple as
+    #               state_action[0] = i (row)
+    #               state_action[1] = j (col)
+    #               state_action[2] = direction ('up','down','left','right')
+    def getQvalue(self,state_action):
+        if state_action[0]< self.rows and state_action[1] < self.cols:
+            return 0.0
+        return self.qValues[state_action[2]][state_action[0]][state_action[1]]
 
-    def setQvalue(self,i,j,direction,val):
+    #state_action = (row,col,direction)
+    def setQvalue(self,state_action,val):
+        i,j,direction = state_action[0],state_action[1],state_action[2]
         self.qValues[direction][i][j] = val
 
     def setQvalueMatrix(self,qvalues):

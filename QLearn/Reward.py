@@ -4,13 +4,19 @@ class Reward:
         self.rows = rows
         self.rewards = {}
     
-    def setReward(self,i,val):
+    def setReward(self,state,val):
+        i = state
         assert i[0] < self.rows and i[1] < self.cols,"Invalid row and Col"
         if val == 0.0:
             self.rewards.pop(i,0.0)
         else:
             self.rewards[i] = val
     
+    def getReward(self,state):
+        if state not in self.rewards:
+            return 0.0
+        return self.rewards[state]
+
     def getRewards(self):
         return self.rewards
     
