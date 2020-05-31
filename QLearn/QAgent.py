@@ -1,5 +1,6 @@
 from QMap import QMap
 import random
+import numpy as np
 
 class QAgent:
     def __init__(self,qmap,rewards,end_states,start=None,start_list=None):
@@ -15,10 +16,25 @@ class QAgent:
             return self.start
         return self.start_list[random.randint(0,len(self.start_list)-1)]
     
-    def exploreGoal(self):
+    #chooseAction function choose current state valid action from ['up','down','left','right']
+    def chooseAction(self,state,valid_actions,exp_rate):
+        action = ''
+
+        if np.random.uniform(0,1) <= exp_rate:
+            action = np.random.choice(valid_actions)
+        else:
+            action = self.qmap.maxQdirection(state)
+        return action
+
+
+
+
+
+    def exploreGoal(self,exp_rate):
         trajectory = []
         cur_state = self.getStart()
 
         while cur_state not in self.end_states:
             valid_directions = self.qmap.getValidMoves(cur_state)
+            
             cur_state = self.qmap.move(state_action)

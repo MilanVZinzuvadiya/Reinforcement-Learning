@@ -36,6 +36,10 @@ class QMap:
         new_val = cur_val + lr * (reward + gamma * next_maxQ - cur_val)
         self.qgrid.setQvalue(state_action,new_val)
     
+    def maxQdirection(self,state):
+        direction,max_value = self.qgrid.maxQ(state)
+        return direction
+
     #move return value of row,col
     # it takes previous state_action tuple as
     #               state_action[0] = i (row)
