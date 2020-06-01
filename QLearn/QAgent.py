@@ -3,19 +3,14 @@ import random
 import numpy as np
 
 class QAgent:
-    def __init__(self,qmap,rewards,end_states,start=None,start_list=None):
+    def __init__(self,qmap,start,end):
         self.qmap = qmap
-        if start == start_list == None:
-            raise "not valid start"
         self.start = start
-        self.start_list = start_list
-        self.end_states = end_states
+        self.end_states = end
         
     
     def getStart(self):
-        if self.start != None:
-            return self.start
-        return self.start_list[random.randint(0,len(self.start_list)-1)]
+        return self.start[random.randint(0,len(self.start)-1)]
     
     #chooseAction function choose current state valid action from ['up','down','left','right']
     def chooseAction(self,state,valid_actions,exp_rate):
@@ -35,15 +30,17 @@ class QAgent:
 
 
     #perform one episode and return trajectory
-    def exploreGoal(self,exp_rate):
+    def exploreTrajectory(self,exp_rate):
         trajectory = []
         cur_state = self.getStart()
-
+        print(self.end_states)
         while cur_state not in self.end_states:
             valid_directions = self.qmap.getValidMoves(cur_state)
+            
             action = self.chooseAction(cur_state,valid_directions,exp_rate)
             state_action = cur_state[0],cur_state[1],action
             trajectory.append(state_action)
             cur_state = self.qmap.move(state_action)
+            print(state_action,cur_state)
         
         return trajectory

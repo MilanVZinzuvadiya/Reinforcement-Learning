@@ -1,6 +1,6 @@
 from Reward import Reward
 from Block import Block
-from Qgrid import QGrid
+from QGrid import QGrid
 
 class QMap:
     def __init__(self,rows,cols):
@@ -20,6 +20,9 @@ class QMap:
         for r in reward:
             self.rewards.setReward(r[0],r[1])
     
+    def getQmap(self,direction):
+        return self.qgrid.getQvalueMatrix(direction)
+
     def updateQgrid(self,trajectory,lr,gamma):
         for state_action in reversed(trajectory):
             self.updateQvalue(state_action,lr,gamma)
@@ -31,7 +34,7 @@ class QMap:
         next_state = self.move(state_action)
         _,next_maxQ = self.qgrid.maxQ(next_state)
 
-        reward = self.rewards.getReward(cur_state)
+        reward = self.rewards.getReward(next_state)
 
         new_val = cur_val + lr * (reward + gamma * next_maxQ - cur_val)
         self.qgrid.setQvalue(state_action,new_val)
@@ -58,9 +61,10 @@ class QMap:
             j = j - 1
         else:
             j = j + 1
-
-        if (0<i<self.rows) and (0 < j < self.cols):
+        
+        if (0<= i <self.rows) and (0 <= j < self.cols):
             return i,j
+        
         return x,y
     
     def getValidMoves(self,state):
@@ -71,10 +75,11 @@ class QMap:
         validDirections = []
         for i in range(4):
             x,y = state[0]+moves[i][0],state[1]+moves[i][1]
-            if (x < self.rows ) and ( y< self.cols):
+            if (x < self.rows ) and ( y< self.cols) and x >= 0 and y >= 0 :
                 if (x,y) not in blcks:
                     validDirections.append(directions[i])
         return validDirections
+
 
                     
                  

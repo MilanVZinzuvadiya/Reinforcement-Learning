@@ -41,8 +41,8 @@ class QGrid:
         self.cols = len(qvalues['up'][self.rows-1])
         self.qValues = qvalues
     
-    def getQvalueMatrix(self):
-        return self.qValues
+    def getQvalueMatrix(self,direction):
+        return self.qValues[direction]
     
     def __eq__(self,grid2):
         return self.qValues == grid2.qValues
