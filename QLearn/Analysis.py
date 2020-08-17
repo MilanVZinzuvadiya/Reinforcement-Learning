@@ -2,7 +2,7 @@ from QMap import QMap
 from QAgent import QAgent
 
 class Analysis:
-    def __init__(self,rows,cols,block,reward,start,end,gamma='static'):
+    def __init__(self,rows,cols,block,reward,start,end,gammaType='static'):
         self.rows = rows
         self.cols = cols
         self.block = block
@@ -10,7 +10,7 @@ class Analysis:
         self.start_states = start
         self.end_states = end
         #setting qMap
-        self.qmap = QMap(rows,cols)
+        self.qmap = QMap(rows,cols,gammaType)
         self.qmap.setQmap(block,reward)
 
         #setup QAgent
@@ -43,7 +43,7 @@ class Analysis:
         while True:
             trajectory = self.episode(exp_rate)
             #change it
-            self.qmap.updateQgrid(trajectory,lr,gamma)            
+            self.qmap.updateQgrid(trajectory,lr)            
             print('-----------------------------------------------------')
             self.directionMatrix = [[j for j in i] for i in directMat]
             directMat = self.getDirectMatrix()
@@ -98,19 +98,21 @@ class Analysis:
             if len(trajectory) > avg_trj:
                 gamma = gamma *0.9
                 gms.append(gamma)
+                self.qmap.updateGamma(gamma)
             elif len(trajectory) < avg_trj:
                 gamma = gamma *1.1
                 if gamma > 1:
                     gamma = 1.0
                 gms.append(gamma)
+                self.qmap.updateGamma(gamma)
             # update q grid
-            self.qmap.updateQgrid(trajectory,lr,gamma)
+            self.qmap.updateQgrid(trajectory,lr)
             avg_trj = (avg_trj*num_ep + len(trajectory))/(num_ep+1)
             self.directionMatrix = [[j for j in i] for i in directMat]
             directMat = self.getDirectMatrix()
             length = length + len(trajectory)
             num_ep = num_ep + 1
-            exp_rate = exp_rate*0.98
+            exp_rate = exp_rate*0.96
             if (directMat != self.directionMatrix and num_ep > 10 ) or trajectory2 == trajectory:
                 break
             trajectory2 = trajectory

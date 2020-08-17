@@ -12,7 +12,7 @@ class QAgent:
     def getStart(self):
         return self.start[random.randint(0,len(self.start)-1)]
     
-    #chooseAction function choose current state valid action from ['up','down','left','right']
+    #chooseAction functio+n choose current state valid action from ['up','down','left','right']
     def chooseAction(self,state,valid_actions,exp_rate):
         action = ''
 
@@ -41,3 +41,18 @@ class QAgent:
             print(state_action,cur_state)
         
         return trajectory
+    
+    def doEpisode(self,exp_rate):
+        cur_state = self.getStart()
+        cr_state = cur_state
+        print(self.end_states)
+        while cur_state not in self.end_states:
+            valid_directions = self.qmap.getValidMoves(cur_state)
+            
+            action = self.chooseAction(cur_state,valid_directions,exp_rate)
+            state_action = cur_state[0],cur_state[1],action
+            
+            cr_state = cur_state
+            cur_state = self.qmap.move(state_action)
+
+            print(state_action,cur_state)

@@ -27,15 +27,11 @@ class QMap:
     def getQmap(self,direction):
         return self.qgrid.getQvalueMatrix(direction)
 
-    def updateQgrid(self,trajectory,lr,gamma,gammaDynamic = None):
-        if gammaDynamic == None:
-            for state_action in reversed(trajectory):
-                self.updateQvalue(state_action,lr,gamma)
-        else:
-            for state_action in reversed(trajectory):
-                self.updateQvalue(state_action,lr,gammaDynamic.getGamma(state_action[0],state_action[1]))
+    def updateQgrid(self,trajectory,lr):
+        for state_action in reversed(trajectory):
+            self.updateQvalue(state_action,lr)
     
-    def updateQvalue(self,state_action,lr,gamma):
+    def updateQvalue(self,state_action,lr):
         cur_val = self.qgrid.getQvalue(state_action)
         cur_state = state_action[0],state_action[1]
 
@@ -44,9 +40,12 @@ class QMap:
 
         reward = self.rewards.getReward(next_state)
 
-        new_val = cur_val + lr * (reward + gamma * next_maxQ - cur_val)
+        new_val = cur_val + lr * (reward + self.gamma.getGamma(cur_state[0],cur_state[1]) * next_maxQ - cur_val)
         self.qgrid.setQvalue(state_action,new_val)
     
+    def updateGamma(self,ngamma,row=0,col=0):
+        self.gamma.setGamma(ngamma,row,col)
+
     def maxQdirection(self,state):
         direction,max_value = self.qgrid.maxQ(state)
         return direction
