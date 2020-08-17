@@ -26,9 +26,6 @@ class QAgent:
 
         return action
 
-
-
-
     #perform one episode and return trajectory
     def exploreTrajectory(self,exp_rate):
         trajectory = []

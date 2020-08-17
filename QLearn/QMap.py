@@ -1,14 +1,18 @@
 from Reward import Reward
 from Block import Block
 from QGrid import QGrid
+from Gamma import Gamma
+
 
 class QMap:
-    def __init__(self,rows,cols):
+    Initial_gamma = 1.0
+    def __init__(self,rows,cols,gammaType='static'):
         self.rows = rows
         self.cols = cols
         self.blocks = Block(rows,cols)
         self.rewards = Reward(rows,cols)
         self.qgrid = QGrid(rows,cols)
+        self.gamma = Gamma(QMap.Initial_gamma,rows,cols,gammaType)
 
     # block is list of wall in grid
     #       with state tuple as (i,j)
@@ -23,9 +27,13 @@ class QMap:
     def getQmap(self,direction):
         return self.qgrid.getQvalueMatrix(direction)
 
-    def updateQgrid(self,trajectory,lr,gamma):
-        for state_action in reversed(trajectory):
-            self.updateQvalue(state_action,lr,gamma)
+    def updateQgrid(self,trajectory,lr,gamma,gammaDynamic = None):
+        if gammaDynamic == None:
+            for state_action in reversed(trajectory):
+                self.updateQvalue(state_action,lr,gamma)
+        else:
+            for state_action in reversed(trajectory):
+                self.updateQvalue(state_action,lr,gammaDynamic.getGamma(state_action[0],state_action[1]))
     
     def updateQvalue(self,state_action,lr,gamma):
         cur_val = self.qgrid.getQvalue(state_action)

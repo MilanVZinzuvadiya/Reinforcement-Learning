@@ -2,7 +2,7 @@ from QMap import QMap
 from QAgent import QAgent
 
 class Analysis:
-    def __init__(self,rows,cols,block,reward,start,end):
+    def __init__(self,rows,cols,block,reward,start,end,gamma='static'):
         self.rows = rows
         self.cols = cols
         self.block = block
@@ -42,6 +42,7 @@ class Analysis:
         print(directMat)
         while True:
             trajectory = self.episode(exp_rate)
+            #change it
             self.qmap.updateQgrid(trajectory,lr,gamma)            
             print('-----------------------------------------------------')
             self.directionMatrix = [[j for j in i] for i in directMat]
@@ -72,6 +73,7 @@ class Analysis:
                 if gamma > 1:
                     gamma = 1.0
                 gms.append(gamma)
+            # update q grid
             self.qmap.updateQgrid(trajectory,lr,gamma)
             avg_trj = (avg_trj*num_ep + len(trajectory))/(num_ep+1)
             self.directionMatrix = [[j for j in i] for i in directMat]
@@ -84,5 +86,32 @@ class Analysis:
             trajectory2 = trajectory
         return num_ep,directMat,length,gms
 
-
-
+    def trainAdaptive2(self,exp_rate,lr,gamma=1.0):
+        num_ep = 0
+        avg_trj = 0.0
+        directMat = self.getDirectMatrix()
+        length = 0
+        gms = [gamma]
+        trajectory2 = []
+        while True:
+            trajectory = self.episode(exp_rate)
+            if len(trajectory) > avg_trj:
+                gamma = gamma *0.9
+                gms.append(gamma)
+            elif len(trajectory) < avg_trj:
+                gamma = gamma *1.1
+                if gamma > 1:
+                    gamma = 1.0
+                gms.append(gamma)
+            # update q grid
+            self.qmap.updateQgrid(trajectory,lr,gamma)
+            avg_trj = (avg_trj*num_ep + len(trajectory))/(num_ep+1)
+            self.directionMatrix = [[j for j in i] for i in directMat]
+            directMat = self.getDirectMatrix()
+            length = length + len(trajectory)
+            num_ep = num_ep + 1
+            exp_rate = exp_rate*0.98
+            if (directMat != self.directionMatrix and num_ep > 10 ) or trajectory2 == trajectory:
+                break
+            trajectory2 = trajectory
+        return num_ep,directMat,length,gms
