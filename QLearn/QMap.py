@@ -43,7 +43,7 @@ class QMap:
         new_val = cur_val + lr * (reward + self.gamma.getGamma(cur_state[0],cur_state[1]) * next_maxQ - cur_val)
         self.qgrid.setQvalue(state_action,new_val)
     
-    def updateGamma(self,ngamma,row=0,col=0):
+    def updateGamma(self,ngamma,row=0,col=0+):
         self.gamma.setGamma(ngamma,row,col)
 
     def maxQdirection(self,state):
