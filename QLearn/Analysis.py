@@ -117,3 +117,18 @@ class Analysis:
                 break
             trajectory2 = trajectory
         return num_ep,directMat,length,gms
+
+    def trainAlgo2(self,exp_rate,lr):
+        num_ep = 0
+        directMat = self.getDirectMatrix()
+        length = 0
+        while True:
+            trajectoryL = self.agent.doEpisode(exp_rate,lr)
+            self.directionMatrix = [[j for j in i] for i in directMat]
+            directMat = self.getDirectMatrix()
+            length = length + trajectoryL
+            num_ep = num_ep + 1
+            exp_rate = exp_rate*0.95
+            if (directMat != self.directionMatrix and num_ep > 10 ):
+                break
+        return num_ep,directMat,length,self.qmap.gamma
