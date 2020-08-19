@@ -9,7 +9,7 @@ class Gamma:
             self.static=True
     
     def getGamma(self,row=0,col=0):
-        if row > self.row or col > self.col or self.static:
+        if (row > self.row) or (col > self.col) or self.static:
             return self.gamma
         return self.gammas.setdefault((row,col),self.gamma)
     
