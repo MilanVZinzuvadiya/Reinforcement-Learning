@@ -27,7 +27,7 @@ class QGrid:
     #               state_action[1] = j (col)
     #               state_action[2] = direction ('up','down','left','right')
     def getQvalue(self,state_action):
-        if state_action[0]< self.rows and state_action[1] < self.cols:
+        if state_action[0]> self.rows and state_action[1] > self.cols:
             return 0.0
         return self.qValues[state_action[2]][state_action[0]][state_action[1]]
 
