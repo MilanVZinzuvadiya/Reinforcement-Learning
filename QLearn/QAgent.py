@@ -20,6 +20,7 @@ class QAgent:
             action = np.random.choice(valid_actions)
         else:
             action = self.qmap.maxQdirection(state)
+            action = 'right'
         
         if action not in valid_actions:
             action = np.random.choice(valid_actions)
@@ -47,26 +48,30 @@ class QAgent:
         cur_state = self.getStart()
         cr_state = cur_state
         cr_reward = 0
-        
+        trajectory = []
         print(self.end_states)
         while cur_state not in self.end_states:
             valid_directions = self.qmap.getValidMoves(cur_state)
             
             action = self.chooseAction(cur_state,valid_directions,exp_rate)
             state_action = cur_state[0],cur_state[1],action
-            self.qmap.updateQvalue(state_action,lr)
-
-            reward_cur = self.qmap.rewards.getReward(cur_state) + 
-                        self.qmap.qgrid.getQvalue(state_action)*self.qmap.gamma.getGamma(cur_state)
-
+            #self.qmap.updateQvalue(state_action,lr)
+            trajectory.append(state_action)
+            reward_cur = self.qmap.rewards.getReward(cur_state) + self.qmap.qgrid.getQvalue(state_action)*self.qmap.gamma.getGamma(cur_state[0],cur_state[1])
+            print('cur',reward_cur)
+            print('cr ',cr_reward)
             cur_state = self.qmap.move(state_action)
-            
+            #reward_cur = self.qmap.rewards.getReward(cur_state) + self.qmap.qgrid.getQvalue(state_action)*self.qmap.gamma.getGamma(cur_state[0],cur_state[1])
             if reward_cur > cr_reward:
-                self.qmap.gamma.setGamma(self.qmap.gamma.getGamma(cr_state[0],cr_state[1])*1.1,cr_state[0],cr_state[1])
+                print('cur > cr')
+                self.qmap.gamma.setGamma(self.qmap.gamma.getGamma(cr_state[0],cr_state[1])*1.01,cr_state[0],cr_state[1])
             elif reward_cur < cr_reward:
-                self.qmap.gamma.setGamma(self.qmap.gamma.getGamma(cr_state[0],cr_state[1])*0.9,cr_state[0],cr_state[1])
+                print('cur < cr')
+                self.qmap.gamma.setGamma(self.qmap.gamma.getGamma(cr_state[0],cr_state[1])*0.99,cr_state[0],cr_state[1])
 
             tr_length += 1
-
+            cr_reward = reward_cur
+            cr_state = cur_state
             print(state_action,cur_state)
+        self.qmap.updateQgrid(trajectory,lr)
         return tr_length
