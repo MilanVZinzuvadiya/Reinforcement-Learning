@@ -3,6 +3,7 @@ class Reward:
         self.cols = cols
         self.rows = rows
         self.rewards = {}
+        self.ep_rewards = {}
     
     def setReward(self,state,val):
         i = state
@@ -15,7 +16,15 @@ class Reward:
     def getReward(self,state):
         if state not in self.rewards:
             return 0.0
-        return self.rewards[state]
+        else:
+            if state in self.ep_rewards:
+                return 0.0
+            else:
+                self.ep_rewards[state] = True
+                return self.rewards[state]
+    
+    def resetRewards(self):
+        self.ep_rewards = {}
 
     def getRewards(self):
         return self.rewards
