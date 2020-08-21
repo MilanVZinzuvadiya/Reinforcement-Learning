@@ -51,7 +51,7 @@ class Analysis:
             print(self.directionMatrix)
             num_ep = num_ep + 1
             exp_rate = exp_rate*0.98
-            if (directMat != self.directionMatrix and num_ep > 10) or trajectory2 == trajectory:
+            if (directMat != self.directionMatrix and num_ep > 5) or trajectory2 == trajectory:
                 break
             trajectory2 = trajectory
         return num_ep,directMat,length
@@ -122,13 +122,20 @@ class Analysis:
         num_ep = 0
         directMat = self.getDirectMatrix()
         length = 0
+        reward = 0.0
         while True:
-            trajectoryL = self.agent.doEpisode(exp_rate,lr)
+            trajectoryL,trajectoryR = self.agent.doEpisode(exp_rate,lr)
             self.directionMatrix = [[j for j in i] for i in directMat]
             directMat = self.getDirectMatrix()
             length = length + trajectoryL
+            reward = reward + trajectoryR
             num_ep = num_ep + 1
             exp_rate = exp_rate*0.95
-            if (directMat != self.directionMatrix and num_ep > 10 ):
+            print(num_ep,' :> ',self.directionMatrix)
+            print(num_ep,' >> ',directMat)
+            print()
+            if ( num_ep > 1 ) and (directMat == self.directionMatrix):
+                print('----------FINALE MATRIX----------\n',self.directionMatrix)
                 break
-        return num_ep,directMat,length,self.qmap.gamma
+
+        return num_ep,directMat,length,self.qmap.gamma,reward
