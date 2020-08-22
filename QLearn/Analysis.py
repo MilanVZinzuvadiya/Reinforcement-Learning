@@ -38,23 +38,23 @@ class Analysis:
         num_ep = 0
         directMat = self.getDirectMatrix()
         length = 0
-        trajectory2 = []
-        print(directMat)
+        
+        return_tot = 0.0
         while True:
-            trajectory = self.episode(exp_rate)
+            trajectory,reward_tr = self.episode(exp_rate)
             #change it
             self.qmap.updateQgrid(trajectory,lr)            
-            print('-----------------------------------------------------')
             self.directionMatrix = [[j for j in i] for i in directMat]
             directMat = self.getDirectMatrix()
             length = length + len(trajectory)
-            print(self.directionMatrix)
             num_ep = num_ep + 1
             exp_rate = exp_rate*0.98
-            if (directMat != self.directionMatrix and num_ep > 5) or trajectory2 == trajectory:
+            if num_ep > 10 and directMat == self.directionMatrix :
+                print('\n========FINAL CONST=========\n',directMat)
                 break
-            trajectory2 = trajectory
-        return num_ep,directMat,length
+            self.qmap.rewards.resetRewards()
+            return_tot = return_tot + reward_tr
+        return num_ep,directMat,length,return_tot
     
     def trainAdaptive(self,exp_rate,lr,gamma=1.0):
         num_ep = 0
@@ -131,11 +131,11 @@ class Analysis:
             reward = reward + trajectoryR
             num_ep = num_ep + 1
             exp_rate = exp_rate*0.95
-            print(num_ep,' :> ',self.directionMatrix)
-            print(num_ep,' >> ',directMat)
-            print()
-            if ( num_ep > 1 ) and (directMat == self.directionMatrix):
-                print('----------FINALE MATRIX----------\n',self.directionMatrix)
+            
+            
+            if ( num_ep > 10 ) and (directMat == self.directionMatrix):
+                print('\n----------ALGO 2 FINALE MATRIX----------\n',self.directionMatrix)
                 break
+            self.qmap.rewards.resetRewards()
 
         return num_ep,directMat,length,self.qmap.gamma,reward
