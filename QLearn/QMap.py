@@ -5,7 +5,7 @@ from Gamma import Gamma
 
 
 class QMap:
-    Initial_gamma = 1.0 
+    Initial_gamma = 0.5
     def __init__(self,rows,cols,gammaType='static'):
         self.rows = rows
         self.cols = cols
@@ -28,20 +28,19 @@ class QMap:
         return self.qgrid.getQvalueMatrix(direction)
 
     def updateQgrid(self,trajectory,lr):
-        for state_action in reversed(trajectory):
-            self.updateQvalue(state_action,lr)
+        for state_action_reward in reversed(trajectory):
+            self.updateQvalue(state_action_reward,lr)
     
-    def updateQvalue(self,state_action,lr):
-        cur_val = self.qgrid.getQvalue(state_action)
-        cur_state = state_action[0],state_action[1]
+    def updateQvalue(self,state_action_reward,lr):
+        cur_val = self.qgrid.getQvalue(state_action_reward[0])
+        cur_state = state_action_reward[0][0],state_action_reward[0][1]
 
-        next_state = self.move(state_action)
+        next_state = self.move(state_action_reward[0])
         _,next_maxQ = self.qgrid.maxQ(next_state)
 
-        reward = self.rewards.getReward(next_state)
-
+        reward = state_action_reward[1]
         new_val = cur_val + lr * (reward + self.gamma.getGamma(cur_state[0],cur_state[1]) * next_maxQ - cur_val)
-        self.qgrid.setQvalue(state_action,new_val)
+        self.qgrid.setQvalue(state_action_reward[0  ],new_val)
     
     def updateGamma(self,ngamma,row=0,col=0):
         self.gamma.setGamma(ngamma,row,col)
