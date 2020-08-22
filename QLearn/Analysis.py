@@ -50,7 +50,6 @@ class Analysis:
             num_ep = num_ep + 1
             exp_rate = exp_rate*0.98
             if num_ep > 10 and directMat == self.directionMatrix :
-                print('\n========FINAL CONST=========\n',directMat)
                 break
             self.qmap.rewards.resetRewards()
             return_tot = return_tot + reward_tr
@@ -118,23 +117,22 @@ class Analysis:
             trajectory2 = trajectory
         return num_ep,directMat,length,gms
 
-    def trainAlgo2(self,exp_rate,lr):
+    def trainAlgo2(self,exp_rate,lr,adaptiveness):
         num_ep = 0
         directMat = self.getDirectMatrix()
         length = 0
         reward = 0.0
         while True:
-            trajectoryL,trajectoryR = self.agent.doEpisode(exp_rate,lr)
+            trajectoryL,trajectoryR = self.agent.doEpisode(exp_rate,lr,adaptiveness)
             self.directionMatrix = [[j for j in i] for i in directMat]
             directMat = self.getDirectMatrix()
             length = length + trajectoryL
             reward = reward + trajectoryR
             num_ep = num_ep + 1
-            exp_rate = exp_rate*0.95
+            exp_rate = exp_rate*0.98
             
             
             if ( num_ep > 10 ) and (directMat == self.directionMatrix):
-                print('\n----------ALGO 2 FINALE MATRIX----------\n',self.directionMatrix)
                 break
             self.qmap.rewards.resetRewards()
 
