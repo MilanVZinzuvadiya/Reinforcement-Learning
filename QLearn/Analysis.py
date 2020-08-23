@@ -48,8 +48,8 @@ class Analysis:
             directMat = self.getDirectMatrix()
             length = length + len(trajectory)
             num_ep = num_ep + 1
-            exp_rate = exp_rate*0.98
-            if num_ep > 10 and directMat == self.directionMatrix :
+            exp_rate = exp_rate*0.991
+            if num_ep > 300 or directMat == self.directionMatrix :
                 break
             self.qmap.rewards.resetRewards()
             return_tot = return_tot + reward_tr
@@ -129,11 +129,11 @@ class Analysis:
             length = length + trajectoryL
             reward = reward + trajectoryR
             num_ep = num_ep + 1
-            exp_rate = exp_rate*0.98
+            exp_rate = exp_rate*0.991
             
             
-            if ( num_ep > 10 ) and (directMat == self.directionMatrix):
+            if ( num_ep > 300 ) or (directMat == self.directionMatrix):
                 break
             self.qmap.rewards.resetRewards()
-
+            print('ep:', num_ep)
         return num_ep,directMat,length,self.qmap.gamma,reward
