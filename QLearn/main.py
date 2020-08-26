@@ -72,43 +72,43 @@ def annotate_heatmap(im, data=None, valfmt="{x:.2f}",
 BULK GRIDWORLD for experments
 '''
 
-#rows_list = [3,3,4,5,10,10]
-#cols_list = [3,5,5,7,10,11]
+rows_list = [3,3,4,5,10,10]
+cols_list = [3,5,5,7,10,11]
 
-rows_list = [10,10]
-cols_list = [10,11]
+#rows_list = [10,10]
+#cols_list = [10,11]
 
 block_list = [
-#    [(1,1)],
-#    [(1,1),(1,3)],
-#    [(1,2)],
-#    [(1,2),(1,3),(1,4),(2,1),(2,4),(3,0)],
+    [(1,1)],
+    [(1,1),(1,3)],
+    [(1,2)],
+    [(1,2),(1,3),(1,4),(2,1),(2,4),(3,0)],
     [],
     [(0,6),(1,1),(1,3),(1,6),(1,8),(2,4),(2,6),(3,0),(4,0),(4,1),(4,3),(4,6),(4,9),(5,0),(5,4),(5,8),(5,9),(6,9),(7,1),(7,4),(7,6),(8,7),(8,9),(9,3)]
 ]
 reward_list = [
-#    [ ((0,2),2.0), ((2,2),3.0) ],
-#    [ ((2,1),2.0), ((0,3),2.0), ((2,4),3.0) ],
-#    [ ((3,1),2.0), ((0,4),2.0), ((1,3),3.0) ],
-#    [ ((0,2),2.0), ((1,1),2.0), ((2,5),2.0), ((2,6),2.0), ((3,1),2.0), ((2,0),3.0) ],
+    [ ((0,2),2.0), ((2,2),3.0) ],
+    [ ((2,1),2.0), ((0,3),2.0), ((2,4),3.0) ],
+    [ ((3,1),2.0), ((0,4),2.0), ((1,3),3.0) ],
+    [ ((0,2),2.0), ((1,1),2.0), ((2,5),2.0), ((2,6),2.0), ((3,1),2.0), ((2,0),3.0) ],
     [ ((9,0),2.0), ((9,1),2.0), ((9,3),2.0), ((8,0),2.0), ((9,9),3.0) ],
     [ ((1,9),2.0), ((4,4),2.0), ((4,5),2.0), ((4,7),2.0), ((6,5),2.0), ((7,7),2.0), ((8,2),2.0), ((8,6),2.0), ((9,8),2.0), ((9,0),3.0) ]
 ]
-#possible_reward_list = [5,7,7,13,11,21]
-possible_reward_list = [11,21]
+possible_reward_list = [5,7,7,13,11,21]
+#possible_reward_list = [11,21]
 start_states_list = [
-#    [(0,0)],
-#    [(0,0)],
-#    [(0,0)],
-#    [(2,3)],
+    [(0,0)],
+    [(0,0)],
+    [(0,0)],
+    [(2,3)],
     [(0,0)],
     [(2,0)]
 ]
 end_states_list = [
-#    [(2,2)],
-#    [(2,4)],
-#    [(1,3)],
-#    [(2,0)],
+    [(2,2)],
+    [(2,4)],
+    [(1,3)],
+    [(2,0)],
     [(9,9)],
     [(9,0)]
 ]
@@ -125,7 +125,7 @@ possible_reward = 5.0
 start_states = [(0,0)]
 end_states = [ (2,2) ]'''
 
-ada = [1,3,5,10,15,20,25,30,35,40,45]
+ada = [1,2,3,4,5,7,10,15,20,25,30,35,40,45]
 for (rows,cols,block,reward,possible_reward,start_states,end_states) in zip(rows_list,cols_list,block_list,reward_list,possible_reward_list,start_states_list,end_states_list):
     for adaptiveness in ada:
         for experiment_no in range(100):
@@ -279,7 +279,7 @@ for (rows,cols,block,reward,possible_reward,start_states,end_states) in zip(rows
             ax6.set_yticks(np.arange(rows))
             ax6.set_title('Gridworld')
 
-            fig_save_dir = 'data/'+str(rows)+'x'+str(cols)+'/'+str(adaptiveness)+' adaptiveness/' 
+            fig_save_dir = 'data/'+str(rows)+'x'+str(cols)+' range 0.1 0.9/'+str(adaptiveness)+' adaptiveness/' 
             if not os.path.exists(fig_save_dir):
                 os.makedirs(fig_save_dir)
             
