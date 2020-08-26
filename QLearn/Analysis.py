@@ -135,5 +135,5 @@ class Analysis:
             if ( num_ep > 300 ) or (directMat == self.directionMatrix):
                 break
             self.qmap.rewards.resetRewards()
-            print('ep:', num_ep)
+            
         return num_ep,directMat,length,self.qmap.gamma,reward
