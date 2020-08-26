@@ -14,7 +14,7 @@ class Gamma:
         return self.gammas.setdefault((row,col),self.gamma)
     
     def setGamma(self,ngamma,row=0,col=0):
-        if ngamma > 0.98 or ngamma < 0.02:
+        if ngamma > 0.9 or ngamma < 0.1:
             return
         if row > self.row or col > self.col:
             return
